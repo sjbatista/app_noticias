@@ -5,9 +5,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ScrollView } from 'react-native-gesture-handler';
 
+//<HomeSreen>
 function HomeScreen({navigation}){
   return(
     <View style={{flex:1}}>
+
+    <View style={{flex:0.3}}>
       <ScrollView horizontal contentContainerStyle={{height:250, width:'400%'}} style={{flex:1}}>
         <ImageBackground source={{uri:'https://classic.exame.com/wp-content/uploads/2021/11/bolsonaro-lula.jpg?quality=70&strip=info&w=1024'}} style={styles.featuredImage}>
 
@@ -39,11 +42,30 @@ function HomeScreen({navigation}){
           </TouchableOpacity>
         </ImageBackground>
       </ScrollView>
-
     </View>
-
+          
+    <View style={{flex:0.7, padding:15}}>
+        <View style={{width:50, height:2, backgroundColor:'#069', position:'absolute', left:25, top:40}}>
+        </View>
+        <Text>More news</Text>
+        <ScrollView contentContainerStyle={{padding:20}} style={{flex:1}}>
+          <View style={{flexDirection:'row', marginTop:10}}>
+            <TouchableOpacity style={{flexDirection:'row'}} onPress={()=> navigation.navigate('News',{
+            title:'Efeito "BolsoLula" traz discórdia em redes sociais',
+            content:'Podemos tentar evitar, mas é impossível fugir de todas as discussões políticas levantadas em ano eleitoral. Neste período, o tema domina todas as conversas, sobretudo as do almoço em família. O Metrópoles conta três histórias de pessoas que tiveram o núcleo familiar abalado por brigas e divisão devido às divergências políticas. Por motivos de segurança, o portal optou por não expor imagens dos entrevistados. Fabíola Alves Fernandes, 33 anos, afirma que as eleições sempre renderam brigas no convívio familiar. As diferentes opiniões entre a UX designer e o marido no pleito de 2018 quase causaram a separação do casamento. “Já aconteceu de eu cortar pessoas da minha vida por política. Eu quase me separei do meu marido por isso”, conta.',
+            imageNews:'https://classic.exame.com/wp-content/uploads/2021/11/bolsonaro-lula.jpg?quality=70&strip=info&w=1024'
+          })}>
+            <Image source={{uri:'https://classic.exame.com/wp-content/uploads/2021/11/bolsonaro-lula.jpg?quality=70&strip=info&w=1024'}} style={{width:100, height:100}}/>
+            <Text style={{padding:10}}>Efeito "Bolso-Lula"</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+    </View>
+          
+    </View>
   );
 }
+//</HomeSreen>
 
 function NewsScreen({navigation,route}){
   return(
@@ -86,6 +108,6 @@ const styles = StyleSheet.create({
     flex:1,
     resizeMode:'cover',
     justifyContent:'flex-end',
-    width:'100%'
+    width:'100%',
   }
 });

@@ -1,46 +1,50 @@
-import * as React from 'react';
+import React, {useEffect,useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, ImageBackground, TouchableOpacity, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ScrollView } from 'react-native-gesture-handler';
+import * as firebase from 'firebase';
+import { db } from './firebase'
 
 //<HomeSreen>
 function HomeScreen({navigation}){
+
+  const [news,setNews]=useState([]);
+
+  useEffect((()=>{
+    db.collection('news').orderBy('date', 'desc').onSnapshot(snapshot=>{
+      setNews(snapshot.docs.map(function(doc){
+        return {info:doc.data()}
+      }));
+    })
+  }),[])
+
   return(
     <View style={{flex:1}}>
 
     <View style={{flex:0.3}}>
-      <ScrollView horizontal contentContainerStyle={{height:250, width:'400%'}} style={{flex:1}}>
-        <ImageBackground source={{uri:'https://classic.exame.com/wp-content/uploads/2021/11/bolsonaro-lula.jpg?quality=70&strip=info&w=1024'}} style={styles.featuredImage}>
+      <ScrollView horizontal contentContainerStyle={{height:250, width:'200%'}} style={{flex:1}}>
 
-          <TouchableOpacity onPress={()=> navigation.navigate('News',{
-            title:'Efeito "BolsoLula" traz discórdia em redes sociais',
-            content:'Podemos tentar evitar, mas é impossível fugir de todas as discussões políticas levantadas em ano eleitoral. Neste período, o tema domina todas as conversas, sobretudo as do almoço em família. O Metrópoles conta três histórias de pessoas que tiveram o núcleo familiar abalado por brigas e divisão devido às divergências políticas. Por motivos de segurança, o portal optou por não expor imagens dos entrevistados. Fabíola Alves Fernandes, 33 anos, afirma que as eleições sempre renderam brigas no convívio familiar. As diferentes opiniões entre a UX designer e o marido no pleito de 2018 quase causaram a separação do casamento. “Já aconteceu de eu cortar pessoas da minha vida por política. Eu quase me separei do meu marido por isso”, conta.',
-            imageNews:'https://classic.exame.com/wp-content/uploads/2021/11/bolsonaro-lula.jpg?quality=70&strip=info&w=1024'
-          })} style={{justifyContent:'flex-end', width:'100%',height:'100%', backgroundColor:'rgba(0,0,0,0.4)'}}>
-            <Text style={{fontSize:29, color:'white'}}>Testing</Text>
-          </TouchableOpacity>
+      {
+          news.map((val,index)=>{
+            if(index <= 2){
+              return (
+              <ImageBackground source={{uri: val.info.image}} style={styles.featuredImage}>
+              <TouchableOpacity onPress={()=> navigation.navigate('News',{
+               title: val.info.title,
+               content: val.info.content,
+              imageNews: val.info.image
+              })} style={{justifyContent:'flex-end', width:'100%',height:'100%', backgroundColor:'rgba(0,0,0,0.4)'}}>
+               <Text style={{fontSize:29, color:'white'}}>{val.info.title}</Text>
+             </TouchableOpacity>
+        </ImageBackground>
+              )
+            }
+          }
+          )
+      }
 
-        </ImageBackground>
-
-        <ImageBackground source={{uri:'https://www.agraer.ms.gov.br/wp-content/uploads/2015/09/Dia-Quente-672x372.jpg'}} style={styles.featuredImage}>
-          <TouchableOpacity style={{justifyContent:'flex-end', left:0,top:0, width:'100%',height:'100%', backgroundColor:'rgba(0,0,0,0.4)'}}>
-            <Text style={{fontSize:29, color:'white'}}>Testing</Text>
-          </TouchableOpacity>
-        </ImageBackground>
-
-        <ImageBackground source={{uri:'https://www.infomoney.com.br/wp-content/uploads/2020/10/GettyImages-1000964844.jpg?resize=916%2C515&quality=50&strip=all'}} style={styles.featuredImage}>
-          <TouchableOpacity style={{justifyContent:'flex-end', left:0,top:0, width:'100%',height:'100%', backgroundColor:'rgba(0,0,0,0.4)'}}>
-            <Text style={{fontSize:29, color:'white'}}>Testing</Text>
-          </TouchableOpacity>
-        </ImageBackground>
-        
-        <ImageBackground source={{uri:'http://cbissn.ibict.br/images/phocagallery/galeria2/thumbs/phoca_thumb_l_image03_grd.png'}} style={styles.featuredImage}>
-          <TouchableOpacity style={{justifyContent:'flex-end', left:0,top:0, width:'100%',height:'100%', backgroundColor:'rgba(0,0,0,0.4)'}}>
-            <Text style={{fontSize:29, color:'white'}}>Testing</Text>
-          </TouchableOpacity>
-        </ImageBackground>
       </ScrollView>
     </View>
           
@@ -49,23 +53,32 @@ function HomeScreen({navigation}){
         </View>
         <Text>More news</Text>
         <ScrollView contentContainerStyle={{padding:20}} style={{flex:1}}>
-          <View style={{flexDirection:'row', marginTop:10}}>
-            <TouchableOpacity style={{flexDirection:'row'}} onPress={()=> navigation.navigate('News',{
-            title:'Efeito "BolsoLula" traz discórdia em redes sociais',
-            content:'Podemos tentar evitar, mas é impossível fugir de todas as discussões políticas levantadas em ano eleitoral. Neste período, o tema domina todas as conversas, sobretudo as do almoço em família. O Metrópoles conta três histórias de pessoas que tiveram o núcleo familiar abalado por brigas e divisão devido às divergências políticas. Por motivos de segurança, o portal optou por não expor imagens dos entrevistados. Fabíola Alves Fernandes, 33 anos, afirma que as eleições sempre renderam brigas no convívio familiar. As diferentes opiniões entre a UX designer e o marido no pleito de 2018 quase causaram a separação do casamento. “Já aconteceu de eu cortar pessoas da minha vida por política. Eu quase me separei do meu marido por isso”, conta.',
-            imageNews:'https://classic.exame.com/wp-content/uploads/2021/11/bolsonaro-lula.jpg?quality=70&strip=info&w=1024'
-          })}>
-            <Image source={{uri:'https://classic.exame.com/wp-content/uploads/2021/11/bolsonaro-lula.jpg?quality=70&strip=info&w=1024'}} style={{width:100, height:100}}/>
-            <Text style={{padding:10}}>Efeito "Bolso-Lula"</Text>
-            </TouchableOpacity>
-          </View>
+
+        {
+          news.map(()=>{
+            if(index > 2){
+              return(
+                <View style={{flexDirection:'row', marginTop:10}}>
+               <TouchableOpacity style={{flexDirection:'row'}} onPress={()=> navigation.navigate('News',{
+               title: val.info.title,
+               content: val.info.content,
+                imageNews: val.info.image
+              })}>
+                <Image source={{uri: val.info.image}} style={{width:100, height:100}}/>
+               <Text style={{padding:10}}>{val.info.title}</Text>
+               </TouchableOpacity>
+            </View>
+              );
+            } 
+          })         
+        }
+
         </ScrollView>
     </View>
           
     </View>
   );
 }
-//</HomeSreen>
 
 function NewsScreen({navigation,route}){
   return(

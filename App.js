@@ -5,12 +5,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as firebase from 'firebase';
-import { db } from './firebase'
+import { db } from './firebase.js'
+import 'firebase/firestore';
 
 //<HomeSreen>
 function HomeScreen({navigation}){
 
-  const [news,setNews]=useState([]);
+  const [theNews,setNews]=useState([]);
 
   useEffect((()=>{
     db.collection('news').orderBy('date', 'desc').onSnapshot(snapshot=>{
@@ -27,7 +28,7 @@ function HomeScreen({navigation}){
       <ScrollView horizontal contentContainerStyle={{height:250, width:'200%'}} style={{flex:1}}>
 
       {
-          news.map((val,index)=>{
+          theNews.map((val,index)=>{
             if(index <= 2){
               return (
               <ImageBackground source={{uri: val.info.image}} style={styles.featuredImage}>
@@ -55,7 +56,7 @@ function HomeScreen({navigation}){
         <ScrollView contentContainerStyle={{padding:20}} style={{flex:1}}>
 
         {
-          news.map(()=>{
+          theNews.map(()=>{
             if(index > 2){
               return(
                 <View style={{flexDirection:'row', marginTop:10}}>
